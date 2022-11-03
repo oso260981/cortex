@@ -164,8 +164,7 @@
       data_intelligence_otc.average_adjusted_price]
     filters:
       data_intelligence_otc.customer_name1: "-NULL"
-      data_intelligence_otc.Currency_Required: USD
-    sorts: [data_intelligence_otc.average_list_price1 desc]
+      sorts: [data_intelligence_otc.average_list_price1 desc]
     limit: 500
     dynamic_fields: [{measure: min_of_adjusted_price_global_currency, based_on: data_intelligence_otc.adjusted_price_Global_currency,
         expression: '', label: Min of Adjusted Price Global Currency, type: min, _kind_hint: measure,
@@ -229,7 +228,14 @@
     conditional_formatting_include_totals: false
     conditional_formatting_include_nulls: false
     defaults_version: 1
-    listen: {}
+    listen:
+      Region: data_intelligence_otc.country
+      Division: data_intelligence_otc.division
+      Currency: data_intelligence_otc.Currency_Required
+      Product: data_intelligence_otc.product
+      Sales Org: data_intelligence_otc.sales_org
+      Distribution Channel: data_intelligence_otc.distribution_channel
+      Year: data_intelligence_otc.creation_date_date
     row: 4
     col: 0
     width: 24
@@ -322,7 +328,7 @@
   - name: Currency
     title: Currency
     type: field_filter
-    default_value: USD
+    default_value: "{{ _user_attributes['default_value_currency_required'] }}"
     allow_multiple_values: true
     required: false
     ui_config:
