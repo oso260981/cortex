@@ -28,7 +28,7 @@ persist_with: cortex_default_datagroup
 include: "/LookML_Dashboard/*.dashboard.lookml"
 
 explore: data_intelligence_ar {
-sql_always_where: ${Client_ID} = "@{CLIENT}" ;;
+  sql_always_where: ${Client_ID} = "@{CLIENT}" ;;
 }
 
 explore:  data_intelligence_otc{
@@ -38,3 +38,85 @@ explore:  data_intelligence_otc{
 explore: Navigation_Bar {}
 
 
+explore: accounts_payable_v2 {
+
+  sql_always_where: ${accounts_payable_v2.client_mandt} =  "@{CLIENT}";;
+}
+
+explore: days_payable_outstanding_v2 {
+  sql_always_where: ${client_mandt} = "@{CLIENT}" ;;
+}
+
+explore: accounts_payable_turnover_v2 {
+
+  sql_always_where: ${accounts_payable_turnover_v2.client_mandt} = "@{CLIENT}" ;;
+}
+
+explore: cash_discount_utilization {
+  sql_always_where: ${client_mandt} = "@{CLIENT}";;
+}
+
+explore: materials_valuation_v2 {
+  sql_always_where: ${client_mandt} =  "@{CLIENT}" ;;
+}
+
+
+explore: inventory_by_plant {
+  sql_always_where: ${inventory_by_plant.client_mandt} ="@{CLIENT}"
+        and ${language_map.looker_locale}='es_ES'
+    ;;
+
+  join: language_map {
+    fields: []
+    type: left_outer
+    sql_on: ${inventory_by_plant.language_spras} = ${language_map.language_key} ;;
+    relationship: many_to_one
+  }
+}
+
+
+
+explore: vendor_performance {
+  sql_always_where: ${vendor_performance.client_mandt} = "@{CLIENT}"
+    and ${language_map.looker_locale}='es_ES'
+    ;;
+
+  join: language_map {
+    fields: []
+    type: left_outer
+    sql_on: ${vendor_performance.language_key} = ${language_map.language_key} ;;
+    relationship: many_to_one
+  }
+
+  join: materials_valuation_v2 {
+    type: left_outer
+    relationship: many_to_one
+    sql_on: ${vendor_performance.client_mandt} = ${materials_valuation_v2.client_mandt}
+          and ${vendor_performance.material_number} = ${materials_valuation_v2.material_number_matnr}
+          and ${vendor_performance.plant} = ${materials_valuation_v2.valuation_area_bwkey}
+          and ${vendor_performance.month_year} = ${materials_valuation_v2.month_year}
+          and ${materials_valuation_v2.valuation_type_bwtar} = ''
+          ;;
+  }
+}
+
+explore: inventory_metrics_overview {
+  sql_always_where: ${inventory_metrics_overview.client_mandt} = "@{CLIENT}"
+    and ${language_map.looker_locale}='es_ES';;
+
+  join: inventory_by_plant {
+    type: left_outer
+    relationship: many_to_one
+    fields: [inventory_by_plant.stock_characteristic]
+    sql_on: ${inventory_by_plant.client_mandt} = ${inventory_metrics_overview.client_mandt}
+      and ${inventory_by_plant.company_code_bukrs} = ${inventory_metrics_overview.company_code_bukrs}
+    ;;
+  }
+
+  join: language_map {
+    fields: []
+    type: left_outer
+    sql_on: ${inventory_metrics_overview.language_spras} = ${language_map.language_key} ;;
+    relationship: many_to_one
+  }
+}
