@@ -4,12 +4,12 @@ constant: CONNECTION_NAME {
 }
 
 constant: GCP_PROJECT {
-  value: "psa-sga-dfn-dv"
+  value: "eon-internal-bigquery"
   export: override_required
 }
 
 constant: REPORTING_DATASET {
-  value: "reporting_ecc_mx"
+  value: "Cortex_REP_2023"
   export: override_required
 }
 
